@@ -8,6 +8,8 @@ import SearchPage from './pages/SearchPage'
 import FilesPage from './pages/FilesPage'
 import SettingsPage from './pages/SettingsPage'
 import IntegrationsPage from './pages/IntegrationsPage'
+import MonitoringPage from './pages/MonitoringPage'
+import BrandProtectionPage from './pages/BrandProtectionPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -33,8 +35,9 @@ export default function App() {
             <Route path="search" element={<SearchPage />} />
             <Route path="files" element={<FilesPage />} />
             <Route path="settings" element={<SettingsPage />} />
-            <Route path="monitoring" element={<div className="p-8 text-text-secondary">Monitoring — Phase 2</div>} />
+            <Route path="monitoring" element={<MonitoringPage />} />
             <Route path="integrations" element={<IntegrationsPage />} />
+            <Route path="brand-protection" element={<BrandProtectionPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

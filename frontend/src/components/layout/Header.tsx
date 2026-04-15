@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { Bell, LogOut, User } from 'lucide-react'
+import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import LanguageSwitcher from '../common/LanguageSwitcher'
+import NotificationBell from '../common/NotificationBell'
 
 export default function Header() {
   const { t } = useTranslation()
@@ -16,10 +17,7 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
 
-        <button className="relative p-2 text-text-secondary hover:text-accent-cyan transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-accent-red rounded-full" />
-        </button>
+        <NotificationBell />
 
         <div className="flex items-center gap-2 text-text-secondary">
           <User className="w-4 h-4" />

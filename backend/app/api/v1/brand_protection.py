@@ -1,5 +1,5 @@
 """Brand Protection API endpoints."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
@@ -289,7 +289,7 @@ async def get_brand_report(
     return {
         "brand_watch": _watch_response(watch, alerts).model_dump(),
         "alerts": [_alert_response(a).model_dump() for a in alerts],
-        "generated_at": datetime.utcnow().isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "summary": {
             "total_alerts": len(alerts),
             "new": sum(1 for a in alerts if a.status == "new"),

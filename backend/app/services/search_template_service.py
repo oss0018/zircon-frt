@@ -87,4 +87,4 @@ async def run_template(db: AsyncSession, template: SearchTemplate) -> dict:
         }
     except Exception as exc:
         logger.error("Search template run failed: %s", exc)
-        return {"error": str(exc), "template_id": template.id}
+        return {"error": "Search execution failed", "template_id": template.id}

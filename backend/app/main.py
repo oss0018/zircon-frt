@@ -69,7 +69,7 @@ app.add_middleware(
 app.add_middleware(RequestLoggingMiddleware)
 
 # Register API routers
-from app.api.v1 import auth, files, search, dashboard, integrations, monitoring, notifications, brand_protection  # noqa: E402
+from app.api.v1 import auth, files, search, dashboard, integrations, monitoring, notifications, brand_protection, export  # noqa: E402
 
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(files.router, prefix="/api/v1")
@@ -79,6 +79,7 @@ app.include_router(integrations.router, prefix="/api/v1")
 app.include_router(monitoring.router, prefix="/api/v1")
 app.include_router(notifications.router, prefix="/api/v1")
 app.include_router(brand_protection.router, prefix="/api/v1")
+app.include_router(export.router, prefix="/api/v1")
 
 
 @app.websocket("/ws/notifications")

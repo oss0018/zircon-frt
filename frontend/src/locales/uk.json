@@ -201,5 +201,13 @@
     "markReviewed": "Перевірено",
     "dismiss": "Відхилити",
     "reopen": "Відкрити знову"
+  },
+  "export": {
+    "exportCsv": "Експорт CSV",
+    "exportJson": "Експорт JSON",
+    "exportPdf": "Експорт PDF",
+    "exporting": "Експорт...",
+    "exportResults": "Експорт результатів",
+    "exportAlerts": "Експорт сповіщень"
   }
 }

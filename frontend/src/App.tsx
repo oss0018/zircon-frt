@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage'
 import SearchPage from './pages/SearchPage'
 import FilesPage from './pages/FilesPage'
 import SettingsPage from './pages/SettingsPage'
+import IntegrationsPage from './pages/IntegrationsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -33,7 +34,7 @@ export default function App() {
             <Route path="files" element={<FilesPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="monitoring" element={<div className="p-8 text-text-secondary">Monitoring — Phase 2</div>} />
-            <Route path="integrations" element={<div className="p-8 text-text-secondary">Integrations — Phase 2</div>} />
+            <Route path="integrations" element={<IntegrationsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

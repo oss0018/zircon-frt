@@ -7,19 +7,25 @@ class BaseIntegration(ABC):
 
     name: str = "base"
     description: str = ""
+    rate_limit: int = 60  # requests per minute
+    cache_ttl: int = 300  # seconds
 
     def __init__(self, api_key: str) -> None:
         self.api_key = api_key
 
     @abstractmethod
-    async def search(self, query: str) -> list[dict[str, Any]]:
+    async def search(self, query: str, query_type: str = "domain") -> list[dict[str, Any]]:
         """Perform a search query and return results."""
         ...
 
     @abstractmethod
+    async def check_health(self) -> dict[str, Any]:
+        """Check service health and API key validity."""
+        ...
+
     async def check_quota(self) -> dict[str, Any]:
         """Check remaining API quota/rate limits."""
-        ...
+        return await self.check_health()
 
 
 class IntegrationRegistry:

@@ -12,7 +12,10 @@ from app.schemas.file import FileListResponse, FileRenameRequest, FileResponse
 from app.services.file_service import FileService
 from app.tasks.file_tasks import process_uploaded_file
 
+import logging
+
 router = APIRouter(prefix="/files", tags=["files"])
+logger = logging.getLogger(__name__)
 
 
 @router.post("/upload", response_model=FileResponse, status_code=status.HTTP_201_CREATED)
@@ -27,8 +30,8 @@ async def upload_file(
     # Trigger async processing
     try:
         process_uploaded_file.delay(db_file.id)
-    except Exception:
-        pass  # Celery might not be available in dev
+    except Exception as exc:
+        logger.warning("Could not queue file processing task for file %d: %s", db_file.id, exc)
     return FileResponse.model_validate(db_file)
 
 

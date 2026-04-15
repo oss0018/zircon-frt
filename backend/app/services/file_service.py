@@ -11,6 +11,11 @@ from app.config import settings
 from app.models.file import File
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class FileService:
     def __init__(self) -> None:
         self.upload_dir = Path(settings.UPLOAD_DIR)
@@ -73,5 +78,6 @@ class FileService:
                 return status == "OK"
             return True
         except Exception:
-            # ClamAV not available — skip scanning
+            # ClamAV not available — log warning and allow upload (configurable policy)
+            logger.warning("ClamAV unavailable for file %s; skipping virus scan", filepath)
             return True

@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     # Admin
     ADMIN_EMAIL: str = "admin@zircon.local"
     ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD: str = "admin123"
+    ADMIN_PASSWORD: str = "CHANGE_ME_IN_PRODUCTION"
 
     # SMTP (optional)
     SMTP_HOST: str = ""

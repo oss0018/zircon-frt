@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Shield, Plus, Play, Trash2, Eye,
-  Loader2, ExternalLink, X,
+  Loader2, ExternalLink, X, Download,
 } from 'lucide-react'
 import clsx from 'clsx'
 import { brandApi, type BrandWatch, type BrandAlert } from '../api/brand'
@@ -137,6 +137,7 @@ function BrandDetailView({ watch, onBack }: { watch: BrandWatch; onBack: () => v
   const [alerts, setAlerts] = useState<BrandAlert[]>([])
   const [loading, setLoading] = useState(true)
   const [scanning, setScanning] = useState(false)
+  const [exporting, setExporting] = useState<string | null>(null)
 
   useEffect(() => {
     brandApi.listAlerts(watch.id).then((r) => { setAlerts(r.data); setLoading(false) }).catch(() => setLoading(false))
@@ -156,6 +157,22 @@ function BrandDetailView({ watch, onBack }: { watch: BrandWatch; onBack: () => v
     setAlerts((prev) => prev.map((a) => (a.id === alertId ? res.data : a)))
   }
 
+  const exportAlerts = async (fmt: string) => {
+    setExporting(fmt)
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
+      const url = `/api/v1/export/brand/${watch.id}/alerts?fmt=${fmt}`
+      const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      const blob = await resp.blob()
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = `brand_alerts_${watch.name}.${fmt}`
+      a.click()
+    } finally {
+      setExporting(null)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -166,12 +183,30 @@ function BrandDetailView({ watch, onBack }: { watch: BrandWatch; onBack: () => v
         </a>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-wrap">
         <button onClick={handleScan} disabled={scanning} className="flex items-center gap-2 px-4 py-2 bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30 rounded-lg text-sm hover:bg-accent-cyan/20 transition-colors disabled:opacity-50">
           {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
           {t('brand.deepScan')}
         </button>
         <span className="text-text-muted text-xs">{t('brand.lastScan')}: {watch.last_scan ? new Date(watch.last_scan).toLocaleString() : t('monitoring.neverChecked')}</span>
+        {alerts.length > 0 && (
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-text-muted text-xs flex items-center gap-1">
+              <Download className="w-3.5 h-3.5" />
+              {t('export.exportAlerts')}:
+            </span>
+            {(['csv', 'json', 'pdf'] as const).map((fmt) => (
+              <button
+                key={fmt}
+                onClick={() => exportAlerts(fmt)}
+                disabled={exporting !== null}
+                className="px-3 py-1 text-xs border border-bg-border text-text-secondary rounded-lg hover:border-accent-cyan/50 hover:text-accent-cyan transition-colors disabled:opacity-50"
+              >
+                {exporting === fmt ? t('export.exporting') : t(`export.export${fmt.charAt(0).toUpperCase() + fmt.slice(1)}`)}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {loading ? (

@@ -201,5 +201,13 @@
     "markReviewed": "Reviewed",
     "dismiss": "Dismiss",
     "reopen": "Reopen"
+  },
+  "export": {
+    "exportCsv": "Export CSV",
+    "exportJson": "Export JSON",
+    "exportPdf": "Export PDF",
+    "exporting": "Exporting...",
+    "exportResults": "Export Results",
+    "exportAlerts": "Export Alerts"
   }
 }

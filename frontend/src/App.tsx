@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Suspense } from 'react'
 import { useAuthStore } from './store/authStore'
+import ErrorBoundary from './components/ErrorBoundary'
 import MainLayout from './components/layout/MainLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -10,6 +11,7 @@ import SettingsPage from './pages/SettingsPage'
 import IntegrationsPage from './pages/IntegrationsPage'
 import MonitoringPage from './pages/MonitoringPage'
 import BrandProtectionPage from './pages/BrandProtectionPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -19,29 +21,31 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="flex items-center justify-center h-screen text-accent-green">Loading...</div>}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <MainLayout />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="files" element={<FilesPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="monitoring" element={<MonitoringPage />} />
-            <Route path="integrations" element={<IntegrationsPage />} />
-            <Route path="brand-protection" element={<BrandProtectionPage />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="flex items-center justify-center h-screen text-accent-green">Loading...</div>}>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <MainLayout />
+                </PrivateRoute>
+              }
+            >
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="files" element={<FilesPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="monitoring" element={<MonitoringPage />} />
+              <Route path="integrations" element={<IntegrationsPage />} />
+              <Route path="brand-protection" element={<BrandProtectionPage />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

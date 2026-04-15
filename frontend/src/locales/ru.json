@@ -201,5 +201,13 @@
     "markReviewed": "Проверено",
     "dismiss": "Отклонить",
     "reopen": "Открыть заново"
+  },
+  "export": {
+    "exportCsv": "Экспорт CSV",
+    "exportJson": "Экспорт JSON",
+    "exportPdf": "Экспорт PDF",
+    "exporting": "Экспорт...",
+    "exportResults": "Экспорт результатов",
+    "exportAlerts": "Экспорт алертов"
   }
 }

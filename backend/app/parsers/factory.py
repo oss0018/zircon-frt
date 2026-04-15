@@ -5,6 +5,10 @@ from app.parsers.txt_parser import TxtParser
 from app.parsers.csv_parser import CsvParser
 from app.parsers.json_parser import JsonParser
 from app.parsers.sql_parser import SqlParser
+from app.parsers.pdf_parser import PdfParser
+from app.parsers.docx_parser import DocxParser
+from app.parsers.xlsx_parser import XlsxParser
+from app.parsers.xml_parser import XmlParser
 
 _PARSERS: dict[str, type[BaseParser]] = {
     ".txt": TxtParser,
@@ -13,6 +17,12 @@ _PARSERS: dict[str, type[BaseParser]] = {
     ".csv": CsvParser,
     ".json": JsonParser,
     ".sql": SqlParser,
+    ".pdf": PdfParser,
+    ".docx": DocxParser,
+    ".doc": DocxParser,
+    ".xlsx": XlsxParser,
+    ".xls": XlsxParser,
+    ".xml": XmlParser,
 }
 
 

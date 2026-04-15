@@ -1,20 +1,24 @@
 # Zircon FRT — OSINT Intelligence Portal
 
-> **Phase 1 MVP** — Automated OSINT data collection, storage, full-text search, and monitoring platform.
+> OSINT data collection, storage, full-text search, brand protection, and monitoring platform.
 
 ![Zircon FRT](https://img.shields.io/badge/version-1.0.0-00ff88?style=flat-square)
 ![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square)
+![CI](https://github.com/your-org/zircon-frt/actions/workflows/main.yml/badge.svg)
 
 ## Features
 
-- 🔍 **Full-text search** across all files with Elasticsearch (AND/OR/NOT operators, exact phrases, highlighted results)
-- 📁 **File management** — upload, parse, and index TXT/CSV/JSON/SQL files
-- 🔒 **JWT authentication** with access + refresh tokens
-- 🛡️ **ClamAV antivirus** scanning on every upload
-- 🔑 **AES-256 encryption** for stored API credentials
-- 📊 **Dashboard** with stats and quick actions
+- 🔍 **Full-text search** — Elasticsearch with AND/OR/NOT, exact phrases, highlighted results
+- 📁 **File management** — upload, parse, and index TXT, CSV, JSON, SQL, **PDF, DOCX, XLSX, XML**
+- 🛡️ **Brand protection** — typosquatting detection, similarity scoring, alert management
+- 👁️ **Monitoring / watchlist** — track IPs, domains, emails, hashes, keywords
+- 📤 **Export** — CSV, JSON, PDF for search results, brand alerts, and watchlist
+- 🔒 **JWT authentication** — access + refresh tokens, bcrypt password hashing
+- 🦠 **ClamAV antivirus** scanning on every upload
+- 🔑 **AES-256-GCM encryption** for stored credentials
+- 📊 **Real-time dashboard** — WebSocket-powered live notifications
 - 🌐 **i18n** — English, Russian, Ukrainian
 - 🎨 **Dark cybersecurity UI** — neon green/cyan accents
 
@@ -22,25 +26,27 @@
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Python 3.12 + FastAPI + SQLAlchemy (async) |
+| Backend | Python 3.12 + FastAPI + SQLAlchemy 2.0 (async) |
 | Database | PostgreSQL 16 |
 | Search | Elasticsearch 8.x |
 | Task Queue | Celery + Redis 7 |
 | Frontend | React 18 + TypeScript + Vite + Tailwind CSS |
 | Reverse Proxy | Nginx |
-| Security | JWT, AES-256-GCM, ClamAV |
+| Security | JWT, AES-256-GCM, ClamAV, bcrypt |
+| PDF Generation | ReportLab |
+| File Parsing | PyMuPDF, pdfminer.six, python-docx, openpyxl, lxml |
 
 ## Quick Start
 
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/oss0018/zircon-frt.git
+git clone https://github.com/your-org/zircon-frt.git
 cd zircon-frt
 cp .env.example .env
 ```
 
-Edit `.env` and set the required secrets:
+Edit `.env` and set required secrets:
 
 ```bash
 # Generate JWT secret
@@ -56,22 +62,15 @@ python3 -c "import secrets, base64; print(base64.urlsafe_b64encode(secrets.token
 docker compose up -d --build
 ```
 
-### 3. Initialize database and admin user
+### 3. Initialize database
 
 ```bash
 docker compose exec backend alembic upgrade head
-docker compose exec backend python scripts/init_db.py
 ```
 
-### 4. (Optional) Seed demo data
+### 4. Open the app
 
-```bash
-docker compose exec backend python scripts/seed_demo_data.py
-```
-
-### 5. Open the app
-
-Navigate to **http://localhost** and sign in with your admin credentials.
+Navigate to **http://localhost** and sign in.
 
 ## Development Setup
 
@@ -92,16 +91,14 @@ cd backend && pip install -e ".[dev]" && uvicorn app.main:app --reload
 |----------|-------------|---------|
 | `DATABASE_URL` | PostgreSQL async URL | `postgresql+asyncpg://...` |
 | `ELASTICSEARCH_URL` | Elasticsearch endpoint | `http://elasticsearch:9200` |
-| `REDIS_URL` | Redis URL (Celery broker) | `redis://redis:6379/0` |
+| `REDIS_URL` | Redis URL | `redis://redis:6379/0` |
 | `SECRET_KEY` | JWT signing key (generate!) | — |
 | `ENCRYPTION_KEY` | AES-256 key base64 (generate!) | — |
 | `POSTGRES_PASSWORD` | PostgreSQL password | — |
-| `ADMIN_EMAIL` | Initial admin email | `admin@zircon.local` |
-| `ADMIN_PASSWORD` | Initial admin password | — |
-| `CLAMAV_HOST` | ClamAV host | `clamav` |
 | `CORS_ORIGINS` | Comma-separated allowed origins | `http://localhost` |
 | `MAX_FILE_SIZE_MB` | Max upload file size | `100` |
 | `SMTP_HOST` | SMTP server (optional) | — |
+| `CLAMAV_HOST` | ClamAV host | `clamav` |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token (optional) | — |
 
 ## Architecture
@@ -113,7 +110,7 @@ cd backend && pip install -e ".[dev]" && uvicorn app.main:app --reload
 └──────────────────┬──────────────────┬───────────────────┘
                    │                  │
         ┌──────────▼───┐   ┌─────────▼────────┐
-        │  FastAPI :8000│   │  React SPA :3000  │
+        │  FastAPI :8000│   │  React SPA        │
         │  (uvicorn)    │   │  (nginx static)   │
         └──────┬────────┘   └──────────────────┘
                │
@@ -130,29 +127,52 @@ PostgreSQL Elasticsearch  Redis       ClamAV
                      └─────────────┘
 ```
 
+See [docs/architecture.md](docs/architecture.md) for the full architecture overview.
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/architecture.md](docs/architecture.md) | System architecture with diagrams |
+| [docs/deployment.md](docs/deployment.md) | Production deployment guide |
+| [docs/api-reference.md](docs/api-reference.md) | API endpoints reference |
+| [docs/user-guide/en.md](docs/user-guide/en.md) | English user guide |
+| [docs/user-guide/ru.md](docs/user-guide/ru.md) | Russian user guide |
+| [docs/user-guide/uk.md](docs/user-guide/uk.md) | Ukrainian user guide |
+
 ## API Documentation
 
-When running, visit **http://localhost/api/docs** for the interactive Swagger UI.
+When running, visit **http://localhost/api/docs** for interactive Swagger UI or **http://localhost/api/redoc** for ReDoc.
 
-Key endpoints:
+## File Parsing Support
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/v1/auth/login` | Get JWT tokens |
-| POST | `/api/v1/auth/register` | Create account |
-| GET | `/api/v1/auth/me` | Current user |
-| POST | `/api/v1/files/upload` | Upload file |
-| GET | `/api/v1/files/` | List files |
-| POST | `/api/v1/search/` | Full-text search |
-| GET | `/api/v1/dashboard/stats` | Dashboard stats |
+| Format | Library | Notes |
+|--------|---------|-------|
+| TXT / LOG / MD | built-in | Plain text |
+| CSV | built-in | All rows |
+| JSON | built-in | Pretty-printed |
+| SQL | built-in | Raw SQL |
+| PDF | PyMuPDF + pdfminer.six | Fallback chain |
+| DOCX / DOC | python-docx | Paragraphs + tables |
+| XLSX / XLS | openpyxl + pandas | All sheets |
+| XML | xml.etree + lxml | Text content |
 
-## File Processing Pipeline
+## Export
 
-1. **Upload** → file saved to disk, SHA-256 hash computed
-2. **Celery task** dispatched → `process_uploaded_file`
-3. **ClamAV scan** → quarantine if infected
-4. **Parse** → extract text content (TXT/CSV/JSON/SQL)
-5. **Elasticsearch index** → file searchable immediately
+After a search or in Brand Protection, use the export buttons:
+
+- **CSV** — spreadsheet-compatible
+- **JSON** — machine-readable with full metadata
+- **PDF** — formatted report with ReportLab
+
+Endpoints: `GET /api/v1/export/search?q=...&fmt=csv|json|pdf`
+
+## Backup
+
+```bash
+docker compose exec backend python scripts/backup_db_and_files.py \
+  --backup-dir /backups --keep-days 30
+```
 
 ## Project Structure
 
@@ -160,20 +180,32 @@ Key endpoints:
 zircon-frt/
 ├── backend/           # FastAPI + Celery
 │   ├── app/
-│   │   ├── api/v1/    # REST endpoints
+│   │   ├── api/v1/    # REST endpoints (auth, files, search, export, brand, monitoring, ...)
 │   │   ├── models/    # SQLAlchemy ORM
 │   │   ├── services/  # Business logic
-│   │   ├── parsers/   # File parsers
+│   │   ├── parsers/   # File parsers (PDF, DOCX, XLSX, XML, ...)
 │   │   └── tasks/     # Celery tasks
+│   ├── scripts/       # Backup and utility scripts
 │   └── alembic/       # DB migrations
 ├── frontend/          # React + TypeScript
 │   └── src/
-│       ├── pages/     # Dashboard, Search, Files, Settings
-│       ├── components/# UI components
+│       ├── pages/     # Dashboard, Search, Files, Brand Protection, ...
+│       ├── components/# UI components + ErrorBoundary
+│       ├── locales/   # en / ru / uk translations
 │       └── api/       # Axios API client
+├── docs/              # Documentation
 ├── nginx/             # Reverse proxy config
+├── .github/workflows/ # CI (lint, test, build)
 └── docker-compose.yml
 ```
+
+## CI / CD
+
+GitHub Actions workflow at `.github/workflows/main.yml` runs on push/PR to `main`:
+
+1. **Backend** — Python 3.12, install deps, run pytest
+2. **Frontend** — Node 20, `npm ci`, `npm run build`
+3. **Docker** — build backend and frontend images
 
 ## License
 

@@ -52,11 +52,14 @@ export default function SearchPage() {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       const url = `/api/v1/export/search?q=${encodeURIComponent(q)}&fmt=${fmt}`
       const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      if (!resp.ok) throw new Error(`Export failed: ${resp.status}`)
       const blob = await resp.blob()
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
       a.download = `search_results.${fmt}`
       a.click()
+    } catch (err) {
+      console.error('Export error:', err)
     } finally {
       setExporting(null)
     }

@@ -163,11 +163,14 @@ function BrandDetailView({ watch, onBack }: { watch: BrandWatch; onBack: () => v
       const token = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       const url = `/api/v1/export/brand/${watch.id}/alerts?fmt=${fmt}`
       const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      if (!resp.ok) throw new Error(`Export failed: ${resp.status}`)
       const blob = await resp.blob()
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
       a.download = `brand_alerts_${watch.name}.${fmt}`
       a.click()
+    } catch (err) {
+      console.error('Export error:', err)
     } finally {
       setExporting(null)
     }

@@ -10,13 +10,13 @@ import os
 import shutil
 import subprocess
 import tarfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-TIMESTAMP = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+TIMESTAMP = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 DEFAULT_BACKUP_DIR = Path(os.getenv("BACKUP_DIR", "/backups"))
 
 

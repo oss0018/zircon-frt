@@ -97,20 +97,21 @@ async def export_search(
 
     svc = SearchService()
     resp = await svc.search(SearchRequest(query=q, per_page=1000), current_user.id, db)
-    now = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y%m%d_%H%M%S")
 
     if fmt == "json":
         return _json_response(
-            {"query": q, "total": resp.total, "exported_at": datetime.now(timezone.utc).isoformat(), "hits": [h.model_dump() for h in resp.hits]},
-            f"search_results_{now}.json",
+            {"query": q, "total": resp.total, "exported_at": now.isoformat(), "hits": [h.model_dump() for h in resp.hits]},
+            f"search_results_{ts}.json",
         )
     if fmt == "pdf":
         headers = ["File ID", "Filename", "Type", "Score", "Date"]
         rows = [[str(h.file_id), h.filename, h.file_type or "", f"{h.score:.2f}", h.created_at or ""] for h in resp.hits]
-        return _pdf_response(f'Search Results: "{q}"', headers, rows, f"search_results_{now}.pdf")
+        return _pdf_response(f'Search Results: "{q}"', headers, rows, f"search_results_{ts}.pdf")
     # default: CSV
     rows_dicts = [{"file_id": h.file_id, "filename": h.filename, "file_type": h.file_type, "score": round(h.score, 4), "created_at": h.created_at} for h in resp.hits]
-    return _csv_response(rows_dicts, f"search_results_{now}.csv")
+    return _csv_response(rows_dicts, f"search_results_{ts}.csv")
 
 
 # ── Brand alerts export ──────────────────────────────────────────────────────
@@ -134,29 +135,30 @@ async def export_brand_alerts(
         select(BrandAlert).where(BrandAlert.brand_watch_id == watch_id).order_by(BrandAlert.created_at.desc())
     )
     alerts = list(alerts_result.scalars().all())
-    now = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y%m%d_%H%M%S")
 
     if fmt == "json":
         return _json_response(
             {
                 "brand": watch.name,
                 "original_url": watch.original_url,
-                "exported_at": datetime.now(timezone.utc).isoformat(),
+                "exported_at": now.isoformat(),
                 "alerts": [
                     {"id": a.id, "found_domain": a.found_domain, "similarity_score": a.similarity_score,
                      "status": a.status, "created_at": a.created_at.isoformat() if a.created_at else None}
                     for a in alerts
                 ],
             },
-            f"brand_alerts_{watch.name}_{now}.json",
+            f"brand_alerts_{watch.name}_{ts}.json",
         )
     if fmt == "pdf":
         headers = ["Found Domain", "Similarity %", "Status", "Detected At"]
         rows = [[a.found_domain, f"{a.similarity_score:.1f}", a.status, a.created_at.strftime("%Y-%m-%d") if a.created_at else ""] for a in alerts]
-        return _pdf_response(f"Brand Alerts: {watch.name}", headers, rows, f"brand_alerts_{watch.name}_{now}.pdf")
+        return _pdf_response(f"Brand Alerts: {watch.name}", headers, rows, f"brand_alerts_{watch.name}_{ts}.pdf")
     # default: CSV
     rows_dicts = [{"found_domain": a.found_domain, "similarity_score": a.similarity_score, "status": a.status, "created_at": a.created_at} for a in alerts]
-    return _csv_response(rows_dicts, f"brand_alerts_{watch.name}_{now}.csv")
+    return _csv_response(rows_dicts, f"brand_alerts_{watch.name}_{ts}.csv")
 
 
 # ── Monitoring / watchlist export ────────────────────────────────────────────
@@ -171,15 +173,16 @@ async def export_watchlist(
 
     result = await db.execute(select(WatchlistItem).where(WatchlistItem.user_id == current_user.id))
     items = list(result.scalars().all())
-    now = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y%m%d_%H%M%S")
 
     if fmt == "json":
         return _json_response(
-            {"exported_at": datetime.now(timezone.utc).isoformat(), "items": [
+            {"exported_at": now.isoformat(), "items": [
                 {"id": i.id, "type": i.item_type, "value": i.value, "is_active": i.is_active}
                 for i in items
             ]},
-            f"watchlist_{now}.json",
+            f"watchlist_{ts}.json",
         )
     rows = [{"id": i.id, "type": i.item_type, "value": i.value, "is_active": i.is_active} for i in items]
-    return _csv_response(rows, f"watchlist_{now}.csv")
+    return _csv_response(rows, f"watchlist_{ts}.csv")

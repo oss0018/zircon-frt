@@ -70,6 +70,36 @@
     "deleteConfirm": "Ви впевнені, що хочете видалити цей файл?",
     "noFiles": "Файли ще не завантажені"
   },
+  "integrations": {
+    "subtitle": "Управління підключеннями OSINT-сервісів та єдиний пошук",
+    "all": "Всі",
+    "configure": "Налаштувати",
+    "enable": "Увімкнути",
+    "disable": "Вимкнути",
+    "refresh": "Оновити",
+    "apiKey": "API-ключ",
+    "enterApiKey": "Введіть API-ключ...",
+    "rateLimit": "Ліміт запитів",
+    "queryTypes": "Типи запитів",
+    "testConnection": "Перевірити підключення",
+    "lastChecked": "Остання перевірка",
+    "noActiveIntegrations": "Немає активних інтеграцій. Налаштуйте вище.",
+    "noResults": "Результатів від цього сервісу немає.",
+    "unifiedSearch": "Єдиний OSINT-пошук",
+    "searchPlaceholder": "Введіть email, домен, IP, URL або хеш...",
+    "searchAll": "Шукати скрізь",
+    "usageDashboard": "Дашборд використання API",
+    "service": "Сервіс",
+    "today": "Сьогодні",
+    "thisWeek": "Цього тижня",
+    "thisMonth": "Цього місяця",
+    "total": "Всього",
+    "status": {
+      "active": "Активна",
+      "inactive": "Неактивна",
+      "error": "Помилка"
+    }
+  },
   "settings": {
     "title": "Налаштування",
     "profile": "Профіль",

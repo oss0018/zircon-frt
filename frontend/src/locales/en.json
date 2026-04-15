@@ -70,6 +70,36 @@
     "deleteConfirm": "Are you sure you want to delete this file?",
     "noFiles": "No files uploaded yet"
   },
+  "integrations": {
+    "subtitle": "Manage OSINT service connections and run unified searches",
+    "all": "All",
+    "configure": "Configure",
+    "enable": "Enable",
+    "disable": "Disable",
+    "refresh": "Refresh",
+    "apiKey": "API Key",
+    "enterApiKey": "Enter API key...",
+    "rateLimit": "Rate Limit",
+    "queryTypes": "Query Types",
+    "testConnection": "Test Connection",
+    "lastChecked": "Last checked",
+    "noActiveIntegrations": "No active integrations. Configure one above.",
+    "noResults": "No results from this service.",
+    "unifiedSearch": "Unified OSINT Search",
+    "searchPlaceholder": "Enter email, domain, IP, URL or hash...",
+    "searchAll": "Search All",
+    "usageDashboard": "API Usage Dashboard",
+    "service": "Service",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "total": "Total",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "error": "Error"
+    }
+  },
   "settings": {
     "title": "Settings",
     "profile": "Profile",

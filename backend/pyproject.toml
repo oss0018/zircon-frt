@@ -40,3 +40,6 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*", "scripts*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

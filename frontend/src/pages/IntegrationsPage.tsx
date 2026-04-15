@@ -309,7 +309,13 @@ function OsintSearchPanel({
     } else {
       if (data.length === 0) return
       const keys = Object.keys(data[0])
-      const csv = [keys.join(','), ...data.map((row) => keys.map((k) => JSON.stringify((row as Record<string, unknown>)[k] ?? '')).join(','))].join('\n')
+      const header = keys.join(',')
+      const rows = data.map((row) =>
+        keys
+          .map((k) => JSON.stringify((row as Record<string, unknown>)[k] ?? ''))
+          .join(','),
+      )
+      const csv = [header, ...rows].join('\n')
       const blob = new Blob([csv], { type: 'text/csv' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
@@ -578,7 +584,7 @@ export default function IntegrationsPage() {
           className="flex items-center gap-2 px-4 py-2 text-sm border border-bg-border rounded-lg text-text-secondary hover:text-text-primary hover:border-accent-green/30 transition-colors"
         >
           <RefreshCw className={clsx('w-4 h-4', loading && 'animate-spin')} />
-          {t('common.loading') && loading ? t('common.loading') : t('integrations.refresh')}
+          {loading ? t('common.loading') : t('integrations.refresh')}
         </button>
       </div>
 

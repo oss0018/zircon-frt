@@ -21,11 +21,22 @@ class IntelXIntegration(BaseIntegration):
     async def search(self, query: str, query_type: str = "email") -> list[dict[str, Any]]:
         async with httpx.AsyncClient(timeout=30) as client:
             # Start search
+            payload = {
+                "term": query,
+                "buckets": [],
+                "lookuplevel": 0,
+                "maxresults": 100,
+                "timeout": 5,
+                "datefrom": "",
+                "dateto": "",
+                "sort": 4,
+                "media": 0,
+                "terminate": [],
+            }
             resp = await client.post(
                 f"{BASE_URL}/intelligent/search",
                 headers=self._headers(),
-                json={"term": query, "buckets": [], "lookuplevel": 0, "maxresults": 100, "timeout": 5,
-                      "datefrom": "", "dateto": "", "sort": 4, "media": 0, "terminate": []},
+                json=payload,
             )
             resp.raise_for_status()
             data = resp.json()

@@ -6,6 +6,9 @@ from app.models.integration import Integration
 from app.models.monitoring_job import MonitoringJob
 from app.models.notification import Notification
 from app.models.api_usage_log import APIUsageLog
+from app.models.watchlist import WatchlistItem, WatchlistResult
+from app.models.brand import BrandWatch, BrandAlert
+from app.models.notification_preference import NotificationPreference
 
 __all__ = [
     "User",
@@ -16,4 +19,9 @@ __all__ = [
     "MonitoringJob",
     "Notification",
     "APIUsageLog",
+    "WatchlistItem",
+    "WatchlistResult",
+    "BrandWatch",
+    "BrandAlert",
+    "NotificationPreference",
 ]
